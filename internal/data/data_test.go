@@ -15,6 +15,11 @@ func Test_storage_Set(t *testing.T) {
 	})
 
 	t.Run("given an item with an existing id, it should update the item in the storage", func(t *testing.T) {
+		storage := data.NewInMemoryStorage()
+		err := storage.Set("1", "item1")
+		assert.NoError(t, err)
+		err = storage.Set("1", "item2")
+		assert.NoError(t, err)
 	})
 
 	t.Run("given an item with an empty id, it should return an error", func(t *testing.T) {
@@ -36,8 +41,17 @@ func Test_storage_Set(t *testing.T) {
 	})
 
 	t.Run("given an ID to get function, it should return the item from the storage", func(t *testing.T) {
+		storage := data.NewInMemoryStorage()
+		err := storage.Set("1", "item1")
+		assert.NoError(t, err)
+		item, found := storage.Get("1")
+		assert.True(t, found)
+		assert.Equal(t, "item1", item)
 	})
 
 	t.Run("given an ID to get that does not exist in the storage, it should return false", func(t *testing.T) {
+		storage := data.NewInMemoryStorage()
+		_, found := storage.Get("1")
+		assert.False(t, found)
 	})
 }

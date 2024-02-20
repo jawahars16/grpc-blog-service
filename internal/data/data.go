@@ -29,7 +29,8 @@ func (s storage) Set(id string, item interface{}) error {
 }
 
 func (s storage) Get(id string) (interface{}, bool) {
-	return nil, false
+	item, found := s.items[id]
+	return item, found
 }
 
 func (s storage) Delete(id string) bool {
