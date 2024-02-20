@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net"
@@ -11,8 +12,10 @@ import (
 )
 
 func main() {
-	port := 9000
-	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	port := flag.Int("port", 9000, "Port to connect to")
+	flag.Parse()
+
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
 	if err != nil {
 		log.Fatal("Sever failed to start\n", err)
 	}
@@ -20,7 +23,7 @@ func main() {
 	grpcServer := grpc.NewServer()
 	post.RegisterBlogServer(grpcServer, post.NewBlogServer(data.NewInMemoryStorage()))
 
-	log.Printf("Server started on port %d\n", port)
+	log.Printf("Server started on port %d\n", *port)
 	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatal("gRPC server failed to start\n", err)
 	}

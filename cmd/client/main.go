@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 
 	"github.com/jawahars16/grpc-blog-service/internal/post"
@@ -10,11 +11,12 @@ import (
 )
 
 func main() {
-	ctx := context.Background()
-	port := 9000
-	conn, err := grpc.Dial(fmt.Sprintf(":%d", port), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	port := flag.Int("port", 9000, "Port to connect to")
+	flag.Parse()
+
+	conn, err := grpc.Dial(fmt.Sprintf(":%d", *port), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		fmt.Println("Failed to connect to server\n", err)
+		fmt.Println("Error in creating connection.", err)
 		return
 	}
 	defer conn.Close()
@@ -22,12 +24,13 @@ func main() {
 	fmt.Println("Connected to server")
 
 	client := post.NewBlogClient(conn)
-	res, err := client.CreatePost(ctx, &post.CreatePostRequest{
-		Title: "Test Title",
+	res, err := client.CreatePost(context.Background(), &post.CreatePostRequest{
+		Title:   "Test Title",
+		Content: "Test Content",
 	})
 	if err != nil {
-		fmt.Println("Failed to create post\n", err)
+		fmt.Println("Failed to create post.", err)
 		return
 	}
-	fmt.Println("Post created successfully\n", res.Post)
+	fmt.Println("Post created successfully.", res.Post)
 }
