@@ -31,7 +31,7 @@ func main() {
 func loop(ctx context.Context, client post.BlogClient) {
 	fmt.Println("")
 	fmt.Println("Enter command to interact with blogging platform. Type 'exit' to quit.")
-	fmt.Println("[Commands: create, get, list, update, delete, exit]")
+	fmt.Println("[Commands: create(c), get(g), list(l), update(u), delete(d), exit(x)]")
 	for {
 		var input string
 		fmt.Println("")
@@ -39,10 +39,10 @@ func loop(ctx context.Context, client post.BlogClient) {
 		fmt.Scanln(&input)
 
 		switch input {
-		case "exit":
+		case "exit", "x":
 			fmt.Println("Exiting...")
 			return
-		case "create":
+		case "create", "c":
 			postDetails := readPostDetails()
 			response, err := client.CreatePost(ctx, &post.CreatePostRequest{
 				Title:           postDetails.Title,
@@ -57,7 +57,7 @@ func loop(ctx context.Context, client post.BlogClient) {
 			}
 			fmt.Println("Post created successfully.", response.Post)
 			continue
-		case "get":
+		case "get", "g":
 			var input string
 			fmt.Print("Post ID: ")
 			fmt.Scanln(&input)
@@ -70,7 +70,7 @@ func loop(ctx context.Context, client post.BlogClient) {
 			}
 			fmt.Println(response.Post)
 			continue
-		case "delete":
+		case "delete", "d":
 			var input string
 			fmt.Print("Post ID: ")
 			fmt.Scanln(&input)
@@ -83,7 +83,7 @@ func loop(ctx context.Context, client post.BlogClient) {
 			}
 			fmt.Println("Post deleted successfully.")
 			continue
-		case "update":
+		case "update", "u":
 			var id string
 			fmt.Print("Post ID: ")
 			fmt.Scanln(&id)
