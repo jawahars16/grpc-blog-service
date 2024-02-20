@@ -2,18 +2,19 @@ package post
 
 import (
 	"context"
-	"errors"
 
 	"github.com/google/uuid"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var (
-	ErrEmptyTitle   = errors.New("title cannot be empty")
-	ErrEmptyContent = errors.New("content cannot be empty")
-	ErrCreatePost   = errors.New("failed to create post")
-	ErrUpdatePost   = errors.New("failed to update post")
-	ErrEmptyPostID  = errors.New("post id cannot be empty")
-	ErrPostNotFound = errors.New("post not found")
+	ErrEmptyTitle   = status.Error(codes.InvalidArgument, "title cannot be empty")
+	ErrEmptyContent = status.Error(codes.InvalidArgument, "content cannot be empty")
+	ErrCreatePost   = status.Error(codes.Internal, "failed to create post")
+	ErrUpdatePost   = status.Error(codes.Internal, "failed to update post")
+	ErrEmptyPostID  = status.Error(codes.InvalidArgument, "post id cannot be empty")
+	ErrPostNotFound = status.Error(codes.NotFound, "post not found")
 )
 
 type storage interface {
