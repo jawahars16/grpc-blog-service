@@ -19,6 +19,7 @@ var (
 type storage interface {
 	Set(id string, item interface{}) error
 	Get(id string) (interface{}, bool)
+	Delete(id string) bool
 }
 
 type blogServer struct {
@@ -102,4 +103,15 @@ func (s blogServer) UpdatePost(ctx context.Context, request *UpdatePostRequest) 
 	return &UpdatePostResponse{
 		Post: updatedPost,
 	}, nil
+}
+
+func (s blogServer) DeletePost(ctx context.Context, request *DeletePostRequest) (*DeletePostResponse, error) {
+	if request.PostId == "" {
+		return nil, ErrEmptyPostID
+	}
+	found := s.data.Delete(request.PostId)
+	if !found {
+		return nil, ErrPostNotFound
+	}
+	return &DeletePostResponse{}, nil
 }

@@ -139,3 +139,41 @@ func Test_Blog_Server_UpdatePost(t *testing.T) {
 		}
 	})
 }
+
+func Test_Blog_Server_DeletePost(t *testing.T) {
+	t.Run("given a request with an empty post id, it should return an error", func(t *testing.T) {
+		ctx := context.Background()
+		server := post.NewBlogServer(data.NewInMemoryStorage())
+		_, err := server.DeletePost(ctx, &post.DeletePostRequest{
+			PostId: "",
+		})
+		assert.ErrorIs(t, err, post.ErrEmptyPostID)
+	})
+
+	t.Run("given a request with a non-existing post id, it should return an error", func(t *testing.T) {
+		ctx := context.Background()
+		server := post.NewBlogServer(data.NewInMemoryStorage())
+		_, err := server.DeletePost(ctx, &post.DeletePostRequest{
+			PostId: "non-existent-id",
+		})
+		assert.ErrorIs(t, err, post.ErrPostNotFound)
+	})
+
+	t.Run("given a request with an existing post id, it should delete the post", func(t *testing.T) {
+		ctx := context.Background()
+		server := post.NewBlogServer(data.NewInMemoryStorage())
+		createResponse, err := server.CreatePost(ctx, &post.CreatePostRequest{
+			Title:   "Title",
+			Content: "Content",
+		})
+		assert.NoError(t, err)
+		_, err = server.DeletePost(ctx, &post.DeletePostRequest{
+			PostId: createResponse.Post.PostId,
+		})
+		assert.NoError(t, err)
+		_, err = server.GetPost(ctx, &post.GetPostRequest{
+			PostId: createResponse.Post.PostId,
+		})
+		assert.ErrorIs(t, err, post.ErrPostNotFound)
+	})
+}

@@ -46,8 +46,16 @@ message UpdatePostResponse {
     Post post = 1;
 }
 
+message DeletePostRequest {
+    string post_id = 1;
+}
+
+message DeletePostResponse {
+}
+
 service Blog {
     rpc CreatePost(CreatePostRequest) returns (CreatePostResponse) {}
     rpc GetPost(GetPostRequest) returns (GetPostResponse) {}
     rpc UpdatePost(UpdatePostRequest) returns (UpdatePostResponse) {}
+    rpc DeletePost(DeletePostRequest) returns (DeletePostResponse) {}
 }
