@@ -34,5 +34,9 @@ func (s storage) Get(id string) (interface{}, bool) {
 }
 
 func (s storage) Delete(id string) bool {
-	return false
+	_, found := s.items[id]
+	if found {
+		delete(s.items, id)
+	}
+	return found
 }
