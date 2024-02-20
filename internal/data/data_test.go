@@ -8,13 +8,16 @@ import (
 )
 
 func Test_In_Memory_Storage(t *testing.T) {
+	t.Parallel()
 	t.Run("given an item to set function, it should store the item in the storage", func(t *testing.T) {
+		t.Parallel()
 		storage := data.NewInMemoryStorage()
 		err := storage.Set("1", "item1")
 		assert.NoError(t, err)
 	})
 
 	t.Run("given an item with an existing id, it should update the item in the storage", func(t *testing.T) {
+		t.Parallel()
 		storage := data.NewInMemoryStorage()
 		err := storage.Set("1", "item1")
 		assert.NoError(t, err)
@@ -23,18 +26,21 @@ func Test_In_Memory_Storage(t *testing.T) {
 	})
 
 	t.Run("given an item with an empty id, it should return an error", func(t *testing.T) {
+		t.Parallel()
 		storage := data.NewInMemoryStorage()
 		err := storage.Set("", "item1")
 		assert.ErrorIs(t, err, data.ErrEmptyID)
 	})
 
 	t.Run("given an item with an empty value, it should return an error", func(t *testing.T) {
+		t.Parallel()
 		storage := data.NewInMemoryStorage()
 		err := storage.Set("1", nil)
 		assert.ErrorIs(t, err, data.ErrEmptyItem)
 	})
 
 	t.Run("given an ID to delete function, it should remove the item from the storage", func(t *testing.T) {
+		t.Parallel()
 		storage := data.NewInMemoryStorage()
 		err := storage.Set("1", "item1")
 		assert.NoError(t, err)
@@ -45,12 +51,14 @@ func Test_In_Memory_Storage(t *testing.T) {
 	})
 
 	t.Run("given an ID to delete that does not exist in the storage, it should return false", func(t *testing.T) {
+		t.Parallel()
 		storage := data.NewInMemoryStorage()
 		deleted := storage.Delete("1")
 		assert.False(t, deleted)
 	})
 
 	t.Run("given an ID to get function, it should return the item from the storage", func(t *testing.T) {
+		t.Parallel()
 		storage := data.NewInMemoryStorage()
 		err := storage.Set("1", "item1")
 		assert.NoError(t, err)
@@ -60,6 +68,7 @@ func Test_In_Memory_Storage(t *testing.T) {
 	})
 
 	t.Run("given an ID to get that does not exist in the storage, it should return false", func(t *testing.T) {
+		t.Parallel()
 		storage := data.NewInMemoryStorage()
 		_, found := storage.Get("1")
 		assert.False(t, found)

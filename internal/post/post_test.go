@@ -12,7 +12,9 @@ import (
 )
 
 func Test_Blog_Server_CreatePost(t *testing.T) {
+	t.Parallel()
 	t.Run("given a request with an empty title, it should return an error", func(t *testing.T) {
+		t.Parallel()
 		ctx := context.Background()
 		server := post.NewBlogServer(data.NewInMemoryStorage())
 		_, err := server.CreatePost(ctx, &post.CreatePostRequest{
@@ -22,6 +24,7 @@ func Test_Blog_Server_CreatePost(t *testing.T) {
 	})
 
 	t.Run("given a request with an empty content, it should return an error", func(t *testing.T) {
+		t.Parallel()
 		ctx := context.Background()
 		server := post.NewBlogServer(data.NewInMemoryStorage())
 		_, err := server.CreatePost(ctx, &post.CreatePostRequest{
@@ -32,6 +35,7 @@ func Test_Blog_Server_CreatePost(t *testing.T) {
 	})
 
 	t.Run("given a valid request, it should return a post with the same title and content", func(t *testing.T) {
+		t.Parallel()
 		ctx := context.Background()
 		publicationTime := timestamppb.New(time.Now())
 		server := post.NewBlogServer(data.NewInMemoryStorage())
@@ -56,7 +60,9 @@ func Test_Blog_Server_CreatePost(t *testing.T) {
 }
 
 func Test_Blog_Server_GetPost(t *testing.T) {
+	t.Parallel()
 	t.Run("given a request with an empty post id, it should return an error", func(t *testing.T) {
+		t.Parallel()
 		ctx := context.Background()
 		server := post.NewBlogServer(data.NewInMemoryStorage())
 		_, err := server.GetPost(ctx, &post.GetPostRequest{
@@ -66,6 +72,7 @@ func Test_Blog_Server_GetPost(t *testing.T) {
 	})
 
 	t.Run("given a request with a non-existing post id, it should return an error", func(t *testing.T) {
+		t.Parallel()
 		ctx := context.Background()
 		server := post.NewBlogServer(data.NewInMemoryStorage())
 		_, err := server.GetPost(ctx, &post.GetPostRequest{
@@ -75,6 +82,7 @@ func Test_Blog_Server_GetPost(t *testing.T) {
 	})
 
 	t.Run("given a request with an existing post id, it should return the post", func(t *testing.T) {
+		t.Parallel()
 		ctx := context.Background()
 		server := post.NewBlogServer(data.NewInMemoryStorage())
 		publicationTime := timestamppb.New(time.Now())
@@ -97,7 +105,9 @@ func Test_Blog_Server_GetPost(t *testing.T) {
 }
 
 func Test_Blog_Server_UpdatePost(t *testing.T) {
+	t.Parallel()
 	t.Run("given a request with an empty post id, it should return an error", func(t *testing.T) {
+		t.Parallel()
 		ctx := context.Background()
 		server := post.NewBlogServer(data.NewInMemoryStorage())
 		_, err := server.UpdatePost(ctx, &post.UpdatePostRequest{
@@ -108,6 +118,7 @@ func Test_Blog_Server_UpdatePost(t *testing.T) {
 	})
 
 	t.Run("given a request with a non-existing post id, it should return an error", func(t *testing.T) {
+		t.Parallel()
 		ctx := context.Background()
 		server := post.NewBlogServer(data.NewInMemoryStorage())
 		_, err := server.UpdatePost(ctx, &post.UpdatePostRequest{
@@ -118,6 +129,7 @@ func Test_Blog_Server_UpdatePost(t *testing.T) {
 	})
 
 	t.Run("given a request with an existing post id, it should return the updated post", func(t *testing.T) {
+		t.Parallel()
 		ctx := context.Background()
 		server := post.NewBlogServer(data.NewInMemoryStorage())
 		createResponse, err := server.CreatePost(ctx, &post.CreatePostRequest{
@@ -141,7 +153,9 @@ func Test_Blog_Server_UpdatePost(t *testing.T) {
 }
 
 func Test_Blog_Server_DeletePost(t *testing.T) {
+	t.Parallel()
 	t.Run("given a request with an empty post id, it should return an error", func(t *testing.T) {
+		t.Parallel()
 		ctx := context.Background()
 		server := post.NewBlogServer(data.NewInMemoryStorage())
 		_, err := server.DeletePost(ctx, &post.DeletePostRequest{
@@ -151,6 +165,7 @@ func Test_Blog_Server_DeletePost(t *testing.T) {
 	})
 
 	t.Run("given a request with a non-existing post id, it should return an error", func(t *testing.T) {
+		t.Parallel()
 		ctx := context.Background()
 		server := post.NewBlogServer(data.NewInMemoryStorage())
 		_, err := server.DeletePost(ctx, &post.DeletePostRequest{
@@ -160,6 +175,7 @@ func Test_Blog_Server_DeletePost(t *testing.T) {
 	})
 
 	t.Run("given a request with an existing post id, it should delete the post", func(t *testing.T) {
+		t.Parallel()
 		ctx := context.Background()
 		server := post.NewBlogServer(data.NewInMemoryStorage())
 		createResponse, err := server.CreatePost(ctx, &post.CreatePostRequest{
