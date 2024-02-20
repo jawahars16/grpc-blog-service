@@ -54,3 +54,26 @@ func Test_Blog_Server_CreatePost(t *testing.T) {
 		}
 	})
 }
+
+func Test_Blog_Server_GetPost(t *testing.T) {
+	t.Run("given a request with an empty post id, it should return an error", func(t *testing.T) {
+		ctx := context.Background()
+		server := post.NewBlogServer(data.NewInMemoryStorage())
+		_, err := server.GetPost(ctx, &post.GetPostRequest{
+			PostId: "",
+		})
+		assert.ErrorIs(t, err, post.ErrEmptyPostID)
+	})
+
+	t.Run("given a request with a non-existing post id, it should return an error", func(t *testing.T) {
+		ctx := context.Background()
+		server := post.NewBlogServer(data.NewInMemoryStorage())
+		_, err := server.GetPost(ctx, &post.GetPostRequest{
+			PostId: "non-existing-id",
+		})
+		assert.ErrorIs(t, err, post.ErrPostNotFound)
+	})
+
+	t.Run("given a request with an existing post id, it should return the post", func(t *testing.T) {
+	})
+}

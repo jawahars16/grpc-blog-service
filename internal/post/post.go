@@ -11,10 +11,13 @@ var (
 	ErrEmptyTitle   = errors.New("title cannot be empty")
 	ErrEmptyContent = errors.New("content cannot be empty")
 	ErrCreatePost   = errors.New("failed to create post")
+	ErrEmptyPostID  = errors.New("post id cannot be empty")
+	ErrPostNotFound = errors.New("post not found")
 )
 
 type storage interface {
 	Set(id string, item interface{}) error
+	Get(id string) (interface{}, bool)
 }
 
 type blogServer struct {
@@ -51,4 +54,15 @@ func (s blogServer) CreatePost(ctx context.Context, request *CreatePostRequest) 
 	return &CreatePostResponse{
 		Post: post,
 	}, nil
+}
+
+func (s blogServer) GetPost(ctx context.Context, request *GetPostRequest) (*GetPostResponse, error) {
+	if request.PostId == "" {
+		return nil, ErrEmptyPostID
+	}
+	_, found := s.data.Get(request.PostId)
+	if !found {
+		return nil, ErrPostNotFound
+	}
+	return nil, nil
 }
