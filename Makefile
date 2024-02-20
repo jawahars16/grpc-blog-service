@@ -4,8 +4,9 @@ proto:
 test:
 	go test -race -v ./...
 
+PORT=9000
 server:
-	go run cmd/server/main.go
+	go run cmd/server/main.go --port $(PORT)
 
 client:
-	go run cmd/client/main.go
+	go run cmd/client/main.go --port $(PORT)
