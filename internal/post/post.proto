@@ -14,3 +14,18 @@ message Post {
     repeated string tags = 6;
 }
 
+message CreatePostRequest {
+    string title = 1;
+    string content = 2;
+    string author = 3;
+    google.protobuf.Timestamp publication_date = 4;
+    repeated string tags = 5;
+}
+
+message CreatePostResponse {
+    Post post = 1;
+}
+
+service Blog {
+    rpc CreatePost(CreatePostRequest) returns (CreatePostResponse) {}
+}
