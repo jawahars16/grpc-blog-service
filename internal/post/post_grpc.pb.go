@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	Blog_CreatePost_FullMethodName = "/post.Blog/CreatePost"
 	Blog_GetPost_FullMethodName    = "/post.Blog/GetPost"
+	Blog_UpdatePost_FullMethodName = "/post.Blog/UpdatePost"
 )
 
 // BlogClient is the client API for Blog service.
@@ -29,6 +30,7 @@ const (
 type BlogClient interface {
 	CreatePost(ctx context.Context, in *CreatePostRequest, opts ...grpc.CallOption) (*CreatePostResponse, error)
 	GetPost(ctx context.Context, in *GetPostRequest, opts ...grpc.CallOption) (*GetPostResponse, error)
+	UpdatePost(ctx context.Context, in *UpdatePostRequest, opts ...grpc.CallOption) (*UpdatePostResponse, error)
 }
 
 type blogClient struct {
@@ -57,12 +59,22 @@ func (c *blogClient) GetPost(ctx context.Context, in *GetPostRequest, opts ...gr
 	return out, nil
 }
 
+func (c *blogClient) UpdatePost(ctx context.Context, in *UpdatePostRequest, opts ...grpc.CallOption) (*UpdatePostResponse, error) {
+	out := new(UpdatePostResponse)
+	err := c.cc.Invoke(ctx, Blog_UpdatePost_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BlogServer is the server API for Blog service.
 // All implementations must embed UnimplementedBlogServer
 // for forward compatibility
 type BlogServer interface {
 	CreatePost(context.Context, *CreatePostRequest) (*CreatePostResponse, error)
 	GetPost(context.Context, *GetPostRequest) (*GetPostResponse, error)
+	UpdatePost(context.Context, *UpdatePostRequest) (*UpdatePostResponse, error)
 	mustEmbedUnimplementedBlogServer()
 }
 
@@ -75,6 +87,9 @@ func (UnimplementedBlogServer) CreatePost(context.Context, *CreatePostRequest) (
 }
 func (UnimplementedBlogServer) GetPost(context.Context, *GetPostRequest) (*GetPostResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPost not implemented")
+}
+func (UnimplementedBlogServer) UpdatePost(context.Context, *UpdatePostRequest) (*UpdatePostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePost not implemented")
 }
 func (UnimplementedBlogServer) mustEmbedUnimplementedBlogServer() {}
 
@@ -125,6 +140,24 @@ func _Blog_GetPost_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Blog_UpdatePost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BlogServer).UpdatePost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Blog_UpdatePost_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BlogServer).UpdatePost(ctx, req.(*UpdatePostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Blog_ServiceDesc is the grpc.ServiceDesc for Blog service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -139,6 +172,10 @@ var Blog_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetPost",
 			Handler:    _Blog_GetPost_Handler,
+		},
+		{
+			MethodName: "UpdatePost",
+			Handler:    _Blog_UpdatePost_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

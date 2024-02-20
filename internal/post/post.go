@@ -11,6 +11,7 @@ var (
 	ErrEmptyTitle   = errors.New("title cannot be empty")
 	ErrEmptyContent = errors.New("content cannot be empty")
 	ErrCreatePost   = errors.New("failed to create post")
+	ErrUpdatePost   = errors.New("failed to update post")
 	ErrEmptyPostID  = errors.New("post id cannot be empty")
 	ErrPostNotFound = errors.New("post not found")
 )
@@ -74,5 +75,31 @@ func (s blogServer) GetPost(ctx context.Context, request *GetPostRequest) (*GetP
 			PublicationDate: post.PublicationDate,
 			Tags:            post.Tags,
 		},
+	}, nil
+}
+
+func (s blogServer) UpdatePost(ctx context.Context, request *UpdatePostRequest) (*UpdatePostResponse, error) {
+	if request.PostId == "" {
+		return nil, ErrEmptyPostID
+	}
+	existingPostItem, found := s.data.Get(request.PostId)
+	if !found {
+		return nil, ErrPostNotFound
+	}
+	existingPost := existingPostItem.(*Post)
+	updatedPost := &Post{
+		PostId:          existingPost.PostId,
+		Title:           request.Title,
+		Content:         request.Content,
+		Author:          request.Author,
+		Tags:            request.Tags,
+		PublicationDate: existingPost.PublicationDate,
+	}
+	err := s.data.Set(request.PostId, updatedPost)
+	if err != nil {
+		return nil, ErrUpdatePost
+	}
+	return &UpdatePostResponse{
+		Post: updatedPost,
 	}, nil
 }

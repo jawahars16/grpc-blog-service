@@ -95,3 +95,47 @@ func Test_Blog_Server_GetPost(t *testing.T) {
 		}
 	})
 }
+
+func Test_Blog_Server_UpdatePost(t *testing.T) {
+	t.Run("given a request with an empty post id, it should return an error", func(t *testing.T) {
+		ctx := context.Background()
+		server := post.NewBlogServer(data.NewInMemoryStorage())
+		_, err := server.UpdatePost(ctx, &post.UpdatePostRequest{
+			PostId: "",
+			Title:  "Test title",
+		})
+		assert.ErrorIs(t, err, post.ErrEmptyPostID)
+	})
+
+	t.Run("given a request with a non-existing post id, it should return an error", func(t *testing.T) {
+		ctx := context.Background()
+		server := post.NewBlogServer(data.NewInMemoryStorage())
+		_, err := server.UpdatePost(ctx, &post.UpdatePostRequest{
+			PostId: "non-existent-id",
+			Title:  "Test title",
+		})
+		assert.ErrorIs(t, err, post.ErrPostNotFound)
+	})
+
+	t.Run("given a request with an existing post id, it should return the updated post", func(t *testing.T) {
+		ctx := context.Background()
+		server := post.NewBlogServer(data.NewInMemoryStorage())
+		createResponse, err := server.CreatePost(ctx, &post.CreatePostRequest{
+			Title:   "Title",
+			Content: "Content",
+		})
+		assert.NoError(t, err)
+		_, err = server.UpdatePost(ctx, &post.UpdatePostRequest{
+			PostId: createResponse.Post.PostId,
+			Title:  "Modified title",
+		})
+		assert.NoError(t, err)
+		getResponse, err := server.GetPost(ctx, &post.GetPostRequest{
+			PostId: createResponse.Post.PostId,
+		})
+		assert.NoError(t, err)
+		if assert.NotNil(t, getResponse.Post) {
+			assert.Equal(t, "Modified title", getResponse.Post.Title)
+		}
+	})
+}

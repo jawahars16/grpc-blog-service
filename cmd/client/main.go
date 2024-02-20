@@ -70,9 +70,6 @@ func loop(ctx context.Context, client post.BlogClient) {
 			fmt.Println("Invalid input.")
 			continue
 		}
-
-		fmt.Println("You entered:", input)
-		fmt.Println("")
 	}
 }
 
