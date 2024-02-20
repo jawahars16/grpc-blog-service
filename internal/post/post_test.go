@@ -1,6 +1,7 @@
 package post_test
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -10,8 +11,9 @@ import (
 )
 
 func Test_CreatePost(t *testing.T) {
+	ctx := context.Background()
 	server := post.NewBlogServer()
-	response, err := server.CreatePost(&post.CreatePostRequest{
+	response, err := server.CreatePost(ctx, &post.CreatePostRequest{
 		Title:           "Test Title",
 		Content:         "Test Content",
 		Author:          "Test Author",
