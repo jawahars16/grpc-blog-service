@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_storage_Set(t *testing.T) {
+func Test_In_Memory_Storage(t *testing.T) {
 	t.Run("given an item to set function, it should store the item in the storage", func(t *testing.T) {
 		storage := data.NewInMemoryStorage()
 		err := storage.Set("1", "item1")

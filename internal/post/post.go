@@ -2,6 +2,12 @@ package post
 
 import (
 	"context"
+	"errors"
+)
+
+var (
+	ErrEmptyTitle   = errors.New("title cannot be empty")
+	ErrEmptyContent = errors.New("content cannot be empty")
 )
 
 type blogServer struct {
@@ -13,10 +19,11 @@ func NewBlogServer() blogServer {
 }
 
 func (s blogServer) CreatePost(ctx context.Context, request *CreatePostRequest) (*CreatePostResponse, error) {
-	return &CreatePostResponse{
-		Post: &Post{
-			Title:   request.Title,
-			Content: request.Content,
-		},
-	}, nil
+	if request.Title == "" {
+		return nil, ErrEmptyTitle
+	}
+	if request.Content == "" {
+		return nil, ErrEmptyContent
+	}
+	return nil, nil
 }
