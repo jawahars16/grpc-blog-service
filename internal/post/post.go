@@ -60,9 +60,19 @@ func (s blogServer) GetPost(ctx context.Context, request *GetPostRequest) (*GetP
 	if request.PostId == "" {
 		return nil, ErrEmptyPostID
 	}
-	_, found := s.data.Get(request.PostId)
+	postData, found := s.data.Get(request.PostId)
 	if !found {
 		return nil, ErrPostNotFound
 	}
-	return nil, nil
+	post := postData.(*Post)
+	return &GetPostResponse{
+		Post: &Post{
+			PostId:          post.PostId,
+			Title:           post.Title,
+			Content:         post.Content,
+			Author:          post.Author,
+			PublicationDate: post.PublicationDate,
+			Tags:            post.Tags,
+		},
+	}, nil
 }

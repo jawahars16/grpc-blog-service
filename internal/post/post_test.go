@@ -75,5 +75,23 @@ func Test_Blog_Server_GetPost(t *testing.T) {
 	})
 
 	t.Run("given a request with an existing post id, it should return the post", func(t *testing.T) {
+		ctx := context.Background()
+		server := post.NewBlogServer(data.NewInMemoryStorage())
+		publicationTime := timestamppb.New(time.Now())
+		createResponse, err := server.CreatePost(ctx, &post.CreatePostRequest{
+			Title:           "Test Title",
+			Content:         "Test Content",
+			PublicationDate: publicationTime,
+		})
+		assert.NoError(t, err)
+		getResponse, err := server.GetPost(ctx, &post.GetPostRequest{
+			PostId: createResponse.Post.PostId,
+		})
+		assert.NoError(t, err)
+		if assert.NotNil(t, getResponse.Post) {
+			assert.Equal(t, "Test Title", getResponse.Post.Title)
+			assert.Equal(t, "Test Content", getResponse.Post.Content)
+			assert.Equal(t, publicationTime, getResponse.Post.PublicationDate)
+		}
 	})
 }
