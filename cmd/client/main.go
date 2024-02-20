@@ -11,6 +11,7 @@ import (
 	"github.com/jawahars16/grpc-blog-service/internal/post"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func main() {
@@ -32,7 +33,7 @@ func loop(ctx context.Context, client post.BlogClient) {
 		var input string
 		fmt.Println("")
 		fmt.Println("Enter command to interact with blogging platform. Type 'exit' to quit.")
-		fmt.Println("[Commands: create, get, list, delete, exit]")
+		fmt.Println("[Commands: create, get, list, update, delete, exit]")
 		fmt.Print("> ")
 		fmt.Scanln(&input)
 
@@ -43,10 +44,11 @@ func loop(ctx context.Context, client post.BlogClient) {
 		case "create":
 			postDetails := readPostDetails()
 			response, err := client.CreatePost(ctx, &post.CreatePostRequest{
-				Title:   postDetails.Title,
-				Content: postDetails.Content,
-				Author:  postDetails.Author,
-				Tags:    postDetails.Tags,
+				Title:           postDetails.Title,
+				Content:         postDetails.Content,
+				Author:          postDetails.Author,
+				Tags:            postDetails.Tags,
+				PublicationDate: timestamppb.Now(),
 			})
 			if err != nil {
 				fmt.Println("Failed to create post.", err)
@@ -63,8 +65,27 @@ func loop(ctx context.Context, client post.BlogClient) {
 			})
 			if err != nil {
 				fmt.Println("Error fetching post.", err)
+				continue
 			}
 			fmt.Println(response.Post)
+			continue
+		case "update":
+			var id string
+			fmt.Print("Post ID: ")
+			fmt.Scanln(&id)
+			postDetails := readPostDetails()
+			response, err := client.UpdatePost(ctx, &post.UpdatePostRequest{
+				PostId:  id,
+				Title:   postDetails.Title,
+				Content: postDetails.Content,
+				Author:  postDetails.Author,
+				Tags:    postDetails.Tags,
+			})
+			if err != nil {
+				fmt.Println("Failed to update post.", err)
+				continue
+			}
+			fmt.Println("Post updated successfully.", response.Post)
 			continue
 		default:
 			fmt.Println("Invalid input.")
