@@ -3,6 +3,7 @@ module github.com/jawahars16/grpc-blog-service
 go 1.22.0
 
 require (
+	github.com/google/uuid v1.4.0
 	github.com/stretchr/testify v1.8.4
 	google.golang.org/grpc v1.61.1
 	google.golang.org/protobuf v1.32.0

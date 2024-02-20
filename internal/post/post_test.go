@@ -5,15 +5,16 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jawahars16/grpc-blog-service/internal/data"
 	"github.com/jawahars16/grpc-blog-service/internal/post"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func Test_Blog_Server(t *testing.T) {
+func Test_Blog_Server_CreatePost(t *testing.T) {
 	t.Run("given a request with an empty title, it should return an error", func(t *testing.T) {
 		ctx := context.Background()
-		server := post.NewBlogServer()
+		server := post.NewBlogServer(data.NewInMemoryStorage())
 		_, err := server.CreatePost(ctx, &post.CreatePostRequest{
 			Title: "",
 		})
@@ -22,7 +23,7 @@ func Test_Blog_Server(t *testing.T) {
 
 	t.Run("given a request with an empty content, it should return an error", func(t *testing.T) {
 		ctx := context.Background()
-		server := post.NewBlogServer()
+		server := post.NewBlogServer(data.NewInMemoryStorage())
 		_, err := server.CreatePost(ctx, &post.CreatePostRequest{
 			Title:   "Test Title",
 			Content: "",
@@ -31,14 +32,14 @@ func Test_Blog_Server(t *testing.T) {
 	})
 
 	t.Run("given a valid request, it should return a post with the same title and content", func(t *testing.T) {
-		t.Skip("WIP")
 		ctx := context.Background()
-		server := post.NewBlogServer()
+		publicationTime := timestamppb.New(time.Now())
+		server := post.NewBlogServer(data.NewInMemoryStorage())
 		response, err := server.CreatePost(ctx, &post.CreatePostRequest{
 			Title:           "Test Title",
 			Content:         "Test Content",
 			Author:          "Test Author",
-			PublicationDate: timestamppb.New(time.Now()),
+			PublicationDate: publicationTime,
 			Tags:            []string{"tag1", "tag2"},
 		})
 
@@ -46,6 +47,10 @@ func Test_Blog_Server(t *testing.T) {
 		if assert.NotNil(t, response.Post) {
 			assert.Equal(t, "Test Title", response.Post.Title)
 			assert.Equal(t, "Test Content", response.Post.Content)
+			assert.Equal(t, "Test Author", response.Post.Author)
+			assert.Equal(t, publicationTime, response.Post.PublicationDate)
+			assert.Equal(t, []string{"tag1", "tag2"}, response.Post.Tags)
+			assert.NotEmpty(t, response.Post.PostId)
 		}
 	})
 }

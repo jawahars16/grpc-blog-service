@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 
+	"github.com/jawahars16/grpc-blog-service/internal/data"
 	"github.com/jawahars16/grpc-blog-service/internal/post"
 	"google.golang.org/grpc"
 )
@@ -17,7 +18,7 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	post.RegisterBlogServer(grpcServer, post.NewBlogServer())
+	post.RegisterBlogServer(grpcServer, post.NewBlogServer(data.NewInMemoryStorage()))
 
 	log.Printf("Server started on port %d\n", port)
 	if err := grpcServer.Serve(listener); err != nil {
