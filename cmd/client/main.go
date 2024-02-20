@@ -31,7 +31,7 @@ func main() {
 func loop(ctx context.Context, client post.BlogClient) {
 	fmt.Println("")
 	fmt.Println("Enter command to interact with blogging platform. Type 'exit' to quit.")
-	fmt.Println("[Commands: create(c), get(g), list(l), update(u), delete(d), exit(x)]")
+	fmt.Println("[Commands: create(c), get(g), update(u), delete(d), exit(x)]")
 	for {
 		var input string
 		fmt.Println("")
